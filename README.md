@@ -7,6 +7,10 @@ or tokens used and the biggest context category. While you type, the left of
 the band shows an estimate of the prompt's token cost (about 4 characters per
 token).
 
+![The usage and context gauges](images/band.png)
+
+![The prompt token estimate beside the gauges](images/prompt-estimate.png)
+
 ## Install
 
 In a terminal Claude Code session:
