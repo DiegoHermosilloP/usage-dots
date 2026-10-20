@@ -5,6 +5,12 @@ import type { Gauge } from '../types'
 
 const gauges = atom({ plugin: 'usage-dots', key: 'gauges' } as const, [] as Gauge[])
 
+const draftTokens = atom({ plugin: 'usage-dots', key: 'draftTokens' } as const, 0)
+
+// No tokenizer is exposed to mods, so this is the usual ~4 characters per token.
+const estimate = (text: string) =>
+  text.trim() === '' ? 0 : Math.ceil(Array.from(text).length / 4)
+
 const LABELS: Record<string, string> = {
   five_hour: 'Usage',
   spend_limit: 'Spend'
@@ -44,6 +50,26 @@ const detailOf = (g: Gauge) => {
 }
 
 export const register: Register = on => {
+  on('prompt.edit', async ($, e, next) => {
+    const box = await next(e)
+
+    await update($, draftTokens, () => estimate(box.text))
+
+    return box
+  })
+
+  on('prompt.change', async ($, e, next) => {
+    await update($, draftTokens, () => estimate(e.text))
+
+    return next(e)
+  })
+
+  on('prompt.submit', async ($, e, next) => {
+    await update($, draftTokens, () => 0)
+
+    return next(e)
+  })
+
   on('session.measure', async ($, e, next) => {
     const next_: Gauge[] = e.rateLimits
       .filter(r => r.kind in LABELS)
@@ -84,8 +110,9 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const list = await read($, gauges)
+    const draft = await read($, draftTokens)
 
-    if (e.props.hasSurvey || list.length === 0) {
+    if (e.props.hasSurvey || (list.length === 0 && draft === 0)) {
       return next(e)
     }
 
@@ -93,7 +120,10 @@ export const register: Register = on => {
 
     return (
       <Box flexDirection="column">
-        <Box justifyContent="flex-end">
+        <Box>
+          <Box flexGrow={1}>
+            {draft > 0 ? <Text dimColor>Prompt ≈ {draft.toLocaleString()} tokens</Text> : null}
+          </Box>
           {list.map(g => (
             <Box key={g.label} hover={{ scope: `usage-dots:${g.label}` }}>
               <Text color={colorOf(g.percent)}>{pieOf(g.percent)} {Math.round(g.percent)}%</Text>

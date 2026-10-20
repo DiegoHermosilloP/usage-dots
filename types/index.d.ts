@@ -13,6 +13,6 @@ export type Gauge = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'usage-dots': { gauges: Gauge[] }
+    'usage-dots': { gauges: Gauge[]; draftTokens: number }
   }
 }
