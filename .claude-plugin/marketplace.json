@@ -1,0 +1,5 @@
+{
+  "name": "usage-dots",
+  "owner": { "name": "DiegoHermosilloP" },
+  "plugins": [{ "name": "usage-dots", "source": "./" }]
+}

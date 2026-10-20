@@ -1,0 +1,1 @@
+{ "name": "usage-dots", "version": "0.1.0", "description": "Colored dots for plan usage and context window fill", "types": "./types/index.d.ts" }
