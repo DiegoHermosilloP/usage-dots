@@ -24,3 +24,20 @@ From a shell:
 ```
 claude plugin install usage-dots --marketplace DiegoHermosilloP/usage-dots
 ```
+
+## Known limits
+
+- The prompt token count is an estimate (about 4 characters per token). Mods
+  have no access to a real tokenizer.
+- Usage gauges appear only on a Claude subscription, and only after the first
+  response reports them.
+- Hover details need a terminal that passes mouse events to Claude Code.
+
+## More mods
+
+[reply-quote](https://github.com/DiegoHermosilloP/reply-quote): select text in
+the terminal and reply to it, like the desktop app's "Reply".
+
+## License
+
+MIT
